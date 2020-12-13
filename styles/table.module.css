@@ -28,6 +28,9 @@
   text-align: left;
   padding: 10px;
 }
+.th {
+  cursor: pointer;
+}
 
 .table tr:nth-child(even) {
   background-color: #f2f2f2;
