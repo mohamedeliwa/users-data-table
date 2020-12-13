@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styles from "../styles/table.module.css";
-import { AiOutlineCaretDown, AiOutlineCaretUp } from "react-icons/ai";
+import { UsersContext } from "../context/UsersContext";
+
 const Table = () => {
+  const { users } = useContext(UsersContext);
   const [sorting, setSorting] = useState({
     element: "date",
     param: "createdAt",
@@ -31,6 +33,31 @@ const Table = () => {
       e.target.innerText = text.join(" ");
     }
   };
+
+  const usersRows = users.map((user, index) => {
+    return (
+      <tr key={user._id}>
+        <td className={styles.td} data-label="Index">
+          {index + 1}
+        </td>
+        <td className={styles.td} data-label="firstName">
+          {user.firstName}
+        </td>
+        <td className={styles.td} data-label="lastName">
+          {user.lastName}
+        </td>
+        <td className={styles.td} data-label="email">
+          {user.email}
+        </td>
+        <td className={styles.td} data-label="gender">
+          {user.gender}
+        </td>
+        <td className={styles.td} data-label="createdDate">
+          {user.createdAt}
+        </td>
+      </tr>
+    );
+  });
   return (
     <div className={styles.container}>
       <table className={styles.table}>
@@ -92,88 +119,7 @@ const Table = () => {
             </th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td className={styles.td} data-label="Index">
-              1
-            </td>
-            <td className={styles.td} data-label="firstName">
-              JHON
-            </td>
-            <td className={styles.td} data-label="lastName">
-              DEO
-            </td>
-            <td className={styles.td} data-label="email">
-              Jhon@Deo.com
-            </td>
-            <td className={styles.td} data-label="gender">
-              Male
-            </td>
-            <td className={styles.td} data-label="createdDate">
-              03/01/2016
-            </td>
-          </tr>
-          <tr>
-            <td className={styles.td} data-label="Index">
-              1
-            </td>
-            <td className={styles.td} data-label="firstName">
-              JHON
-            </td>
-            <td className={styles.td} data-label="lastName">
-              DEO
-            </td>
-            <td className={styles.td} data-label="email">
-              Jhon@Deo.com
-            </td>
-            <td className={styles.td} data-label="gender">
-              Male
-            </td>
-            <td className={styles.td} data-label="createdDate">
-              03/01/2016
-            </td>
-          </tr>
-          <tr>
-            <td className={styles.td} data-label="Index">
-              1
-            </td>
-            <td className={styles.td} data-label="firstName">
-              JHON
-            </td>
-            <td className={styles.td} data-label="lastName">
-              DEO
-            </td>
-            <td className={styles.td} data-label="email">
-              Jhon@Deo.com
-            </td>
-            <td className={styles.td} data-label="gender">
-              Male
-            </td>
-            <td className={styles.td} data-label="createdDate">
-              03/01/2016
-            </td>
-          </tr>
-          <tr>
-            <td className={styles.td} data-label="Index">
-              1
-            </td>
-            <td className={styles.td} data-label="firstName">
-              JHON
-            </td>
-            <td className={styles.td} data-label="lastName">
-              DEO
-            </td>
-            <td className={styles.td} data-label="email">
-              Jhon@Deo.com
-            </td>
-            <td className={styles.td} data-label="gender">
-              Male
-            </td>
-            <td className={styles.td} data-label="createdDate">
-              03/01/2016
-            </td>
-          </tr>
-        </tbody>
+        <tbody>{usersRows}</tbody>
       </table>
     </div>
   );
