@@ -53,7 +53,6 @@ const UsersContextProvider = (props) => {
 
   const fetchUsersByPage = async (userPerPage, page) => {
     try {
-      console.log(userPerPage, page);
       const url = `http://localhost:5000/users?limit=${userPerPage}&skip=${page}`;
       const res = await fetch(url);
       if (res.status === 200) {
