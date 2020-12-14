@@ -1,34 +1,49 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styles from "../styles/filter.module.css";
-const Filtering = () => {
-  const [filterParam, setFilterParam] = useState("firstName");
+import { UsersContext } from "../context/UsersContext";
 
+const Filtering = () => {
+  const [filterParam, setFilterParam] = useState("first_name");
+  const { searchUsers } = useContext(UsersContext);
   const handleParamChange = (e) => {
     e.preventDefault();
     setFilterParam(e.target.value);
+    const element = document.querySelector("#searchKey");
+    element.value = "";
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const element = document.querySelector("#searchKey");
+    searchUsers(filterParam, element.value);
   };
   const filter =
-    filterParam == "firstName" || filterParam == "lastName" ? (
-      <input type="text" />
+    filterParam == "first_name" || filterParam == "last_name" ? (
+      <input id="searchKey" type="text" />
     ) : filterParam == "email" ? (
-      <input type="email" />
+      <input id="searchKey" type="email" />
     ) : filterParam == "gender" ? (
-      <span>gender</span>
+      <select id="searchKey">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
     ) : filterParam == "createdAt" ? (
-      <span>creation Date</span>
+      <input id="searchKey" type="date" />
     ) : null;
 
   return (
-    <form className={styles.form}>
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label>Search by:</label>
       <select name="filter" id="users-filter" onChange={handleParamChange}>
-        <option value="firstName">First Name</option>
-        <option value="lastName">Last Name</option>
+        <option value="first_name">First Name</option>
+        <option value="last_name">Last Name</option>
         <option value="gender">Gender</option>
-        <option value="email">email</option>
+        <option value="email">Email</option>
         <option value="createdAt">Creation Date</option>
       </select>
+      <label>Search key:</label>
       {filter}
-      <input type="submit" />
+      <input style={{ marginTop: "10px" }} type="submit" />
     </form>
   );
 };

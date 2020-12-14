@@ -66,8 +66,24 @@ const UsersContextProvider = (props) => {
     }
   };
 
+  const searchUsers = async (searchKey, searchValue) => {
+    try {
+      console.log(searchValue);
+      const url = `http://localhost:5000/users?limit=10&skip=0&${searchKey}=${searchValue}`;
+      const res = await fetch(url);
+      if (res.status === 200) {
+        const resJSON = await res.json();
+        setUsers([...resJSON]);
+      } else {
+        throw new Error("Failed to fetch users!");
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
-    <UsersContext.Provider value={{ users, sortUsers, fetchUsersByPage }}>
+    <UsersContext.Provider value={{ users, sortUsers, fetchUsersByPage, searchUsers }}>
       {props.children}
     </UsersContext.Provider>
   );
