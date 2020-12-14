@@ -13,7 +13,7 @@ const UsersContextProvider = (props) => {
         });
         if (res.status === 200 && users.length === 0) {
           const reJSON = await res.json();
-          setUsers([...reJSON.reverse()]);
+          setUsers([...reJSON]);
         } else if (users.length > 0) {
           return;
         } else {
@@ -30,9 +30,9 @@ const UsersContextProvider = (props) => {
       const sortedUsers = [...users];
       sortedUsers.sort((a, b) => {
         if (a[param] > b[param]) {
-          return 1;
-        } else if (a[param] < b[param]) {
           return -1;
+        } else if (a[param] < b[param]) {
+          return 1;
         }
         return 0;
       });
@@ -41,9 +41,9 @@ const UsersContextProvider = (props) => {
       const sortedUsers = [...users];
       sortedUsers.sort((a, b) => {
         if (b[param] > a[param]) {
-          return 1;
-        } else if (b[param] < a[param]) {
           return -1;
+        } else if (b[param] < a[param]) {
+          return 1;
         }
         return 0;
       });
@@ -51,8 +51,24 @@ const UsersContextProvider = (props) => {
     }
   };
 
+  const fetchUsersByPage = async (userPerPage, page) => {
+    try {
+      console.log(userPerPage, page);
+      const url = `http://localhost:5000/users?limit=${userPerPage}&skip=${page}`;
+      const res = await fetch(url);
+      if (res.status === 200) {
+        const resJSON = await res.json();
+        setUsers([...resJSON]);
+      } else {
+        throw new Error("Failed to fetch users!");
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
-    <UsersContext.Provider value={{ users, sortUsers }}>
+    <UsersContext.Provider value={{ users, sortUsers, fetchUsersByPage }}>
       {props.children}
     </UsersContext.Provider>
   );

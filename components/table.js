@@ -5,7 +5,7 @@ import { UsersContext } from "../context/UsersContext";
 const Table = () => {
   const { users, sortUsers } = useContext(UsersContext);
   const [sorting, setSorting] = useState({
-    element: "date",
+    element: "createdAt",
     param: "createdAt",
     direction: "desc",
   });
@@ -21,7 +21,7 @@ const Table = () => {
       let text = e.target.innerText.split(" ");
       text[1] = text[1] === "v" ? "^" : "v";
       e.target.innerText = text.join(" ");
-      sortUsers(sorting.param, direction);
+      sortUsers(e.target.id, direction);
     } else {
       const oldElement = document.querySelector(`#${sorting.element}`);
       oldElement.innerText = oldElement.innerText.split(" ")[0];
@@ -33,7 +33,7 @@ const Table = () => {
       let text = e.target.innerText.split(" ");
       text[1] = text[1] === "v" ? "^" : "v";
       e.target.innerText = text.join(" ");
-      sortUsers(e.target.dataset.param, "desc");
+      sortUsers(e.target.id, "desc");
     }
   };
 
@@ -79,7 +79,7 @@ const Table = () => {
             <th
               id="firstName"
               className={styles.th}
-              data-param="firstName"
+              data-param="first_name"
               scope="col"
               onClick={handleSorting}
             >
@@ -87,7 +87,7 @@ const Table = () => {
             </th>
             <th
               id="lastName"
-              data-param="lastName"
+              data-param="last_name"
               className={styles.th}
               scope="col"
               onClick={handleSorting}
@@ -113,7 +113,7 @@ const Table = () => {
               Gender
             </th>
             <th
-              id="date"
+              id="createdAt"
               data-param="createdAt"
               className={styles.th}
               scope="col"
