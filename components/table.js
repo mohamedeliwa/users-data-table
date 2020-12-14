@@ -3,7 +3,7 @@ import styles from "../styles/table.module.css";
 import { UsersContext } from "../context/UsersContext";
 
 const Table = () => {
-  const { users } = useContext(UsersContext);
+  const { users, sortUsers } = useContext(UsersContext);
   const [sorting, setSorting] = useState({
     element: "date",
     param: "createdAt",
@@ -13,13 +13,15 @@ const Table = () => {
   const handleSorting = (e) => {
     e.preventDefault();
     if (e.target.id === sorting.element) {
+      const direction = sorting.direction === "asc" ? "desc" : "asc";
       setSorting({
         ...sorting,
-        direction: sorting.direction === "asc" ? "desc" : "asc",
+        direction,
       });
       let text = e.target.innerText.split(" ");
       text[1] = text[1] === "v" ? "^" : "v";
       e.target.innerText = text.join(" ");
+      sortUsers(sorting.param, direction);
     } else {
       const oldElement = document.querySelector(`#${sorting.element}`);
       oldElement.innerText = oldElement.innerText.split(" ")[0];
@@ -31,6 +33,7 @@ const Table = () => {
       let text = e.target.innerText.split(" ");
       text[1] = text[1] === "v" ? "^" : "v";
       e.target.innerText = text.join(" ");
+      sortUsers(e.target.dataset.param, "desc");
     }
   };
 
@@ -58,6 +61,7 @@ const Table = () => {
       </tr>
     );
   });
+
   return (
     <div className={styles.container}>
       <table className={styles.table}>
@@ -68,14 +72,14 @@ const Table = () => {
               id="index"
               className={styles.th}
               scope="col"
-              onClick={handleSorting}
+              // onClick={handleSorting}
             >
               Index
             </th>
             <th
               id="firstName"
               className={styles.th}
-              data-param="first_name"
+              data-param="firstName"
               scope="col"
               onClick={handleSorting}
             >
@@ -83,7 +87,7 @@ const Table = () => {
             </th>
             <th
               id="lastName"
-              data-param="last_name"
+              data-param="lastName"
               className={styles.th}
               scope="col"
               onClick={handleSorting}

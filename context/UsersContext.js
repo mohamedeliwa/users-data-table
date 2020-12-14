@@ -7,13 +7,15 @@ const UsersContextProvider = (props) => {
   useEffect(() => {
     (async () => {
       try {
-        const url = "http://localhost:5000/users";
+        const url = "http://localhost:5000/users?limit=10";
         const res = await fetch(url, {
           method: "GET",
         });
-        if (res.status === 200) {
+        if (res.status === 200 && users.length === 0) {
           const reJSON = await res.json();
-          setUsers([...reJSON]);
+          setUsers([...reJSON.reverse()]);
+        } else if (users.length > 0) {
+          return;
         } else {
           throw new Error("Failed to fetch Users!");
         }
@@ -22,8 +24,35 @@ const UsersContextProvider = (props) => {
       }
     })();
   }, []);
+
+  const sortUsers = (param, direction) => {
+    if (direction === "asc") {
+      const sortedUsers = [...users];
+      sortedUsers.sort((a, b) => {
+        if (a[param] > b[param]) {
+          return 1;
+        } else if (a[param] < b[param]) {
+          return -1;
+        }
+        return 0;
+      });
+      setUsers([...sortedUsers]);
+    } else if (direction === "desc") {
+      const sortedUsers = [...users];
+      sortedUsers.sort((a, b) => {
+        if (b[param] > a[param]) {
+          return 1;
+        } else if (b[param] < a[param]) {
+          return -1;
+        }
+        return 0;
+      });
+      setUsers([...sortedUsers]);
+    }
+  };
+
   return (
-    <UsersContext.Provider value={{ users }}>
+    <UsersContext.Provider value={{ users, sortUsers }}>
       {props.children}
     </UsersContext.Provider>
   );
