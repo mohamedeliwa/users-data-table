@@ -122,12 +122,15 @@ const UsersContextProvider = (props) => {
   const searchUsers = async (searchKey, searchValue) => {
     try {
       const match = {
+        limit: 10,
+        skip: 0,
         first_name: "",
         last_name: "",
         email: "",
         gender: "",
         createdAt: "",
       };
+      setPage(0)
       match[searchKey] = searchValue;
       const url = generateURL(match);
       const res = await fetch(url);
