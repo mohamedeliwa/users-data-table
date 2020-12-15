@@ -5,6 +5,10 @@ export const UsersContext = createContext();
 const UsersContextProvider = (props) => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
+  const [sorting, setSorting] = useState({
+    param: "createdAt",
+    direction: "desc",
+  });
   useEffect(() => {
     (async () => {
       try {
@@ -26,9 +30,12 @@ const UsersContextProvider = (props) => {
     })();
   }, []);
 
-  const sortUsers = (param, direction) => {
+  const sortUsers = (
+    param = sorting.param,
+    direction = sorting.direction,
+    sortedUsers = [...users]
+  ) => {
     if (direction === "asc") {
-      const sortedUsers = [...users];
       sortedUsers.sort((a, b) => {
         if (a[param] > b[param]) {
           return -1;
@@ -39,7 +46,6 @@ const UsersContextProvider = (props) => {
       });
       setUsers([...sortedUsers]);
     } else if (direction === "desc") {
-      const sortedUsers = [...users];
       sortedUsers.sort((a, b) => {
         if (b[param] > a[param]) {
           return -1;
@@ -50,6 +56,11 @@ const UsersContextProvider = (props) => {
       });
       setUsers([...sortedUsers]);
     }
+    setSorting({
+      ...sorting,
+      param,
+      direction,
+    });
   };
 
   const fetchUsersByPage = async (userPerPage, direction) => {
@@ -67,7 +78,8 @@ const UsersContextProvider = (props) => {
       if (res.status === 200) {
         const resJSON = await res.json();
         if (resJSON.length > 0) {
-          setUsers([...resJSON]);
+          // setUsers([...resJSON]);
+          sortUsers(sorting.param, sorting.direction, [...resJSON]);
           if (userPerPage !== "all") setPage(pageRequested);
         }
       } else {
@@ -85,7 +97,8 @@ const UsersContextProvider = (props) => {
       const res = await fetch(url);
       if (res.status === 200) {
         const resJSON = await res.json();
-        setUsers([...resJSON]);
+        // setUsers([...resJSON]);
+        sortUsers(sorting.param, sorting.direction, [...resJSON]);
       } else {
         throw new Error("Failed to fetch users!");
       }
