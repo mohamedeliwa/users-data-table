@@ -1,20 +1,24 @@
 import { useContext, useState } from "react";
 import { UsersContext } from "../context/UsersContext";
 import styles from "../styles/pagination.module.css";
+
 const Paginations = () => {
-  // const [page, setPage] = useState(0);
   const [userCount, setUsersCount] = useState(10);
   const { page, fetchUsersByPage } = useContext(UsersContext);
+
+  // handling form change and submitting
   const handleChange = (e) => {
     e.preventDefault();
     const newCount = e.target.value;
     setUsersCount(newCount);
     fetchUsersByPage(newCount, undefined);
   };
+  // getting previous page
   const getPrevPage = (e) => {
     e.preventDefault();
     fetchUsersByPage(userCount, "-");
   };
+  // getting the next page
   const getNextPage = (e) => {
     e.preventDefault();
     fetchUsersByPage(userCount, "+");

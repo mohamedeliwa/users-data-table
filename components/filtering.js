@@ -4,9 +4,11 @@ import { UsersContext } from "../context/UsersContext";
 import { useRouter } from "next/router";
 
 const Filtering = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [filterParam, setFilterParam] = useState("first_name");
   const { searchUsers } = useContext(UsersContext);
+
+  // handling form inputs' changes
   const handleParamChange = (e) => {
     e.preventDefault();
     setFilterParam(e.target.value);
@@ -14,11 +16,14 @@ const Filtering = () => {
     element.value = "";
   };
 
+  // submitting the form
   const handleSubmit = (e) => {
     e.preventDefault();
+    // getting the value to search for
     const element = document.querySelector("#searchKey");
     searchUsers(filterParam, element.value);
   };
+  // JSX Element to as an input for the search paramater
   const filter =
     filterParam == "first_name" || filterParam == "last_name" ? (
       <input id="searchKey" type="text" />
@@ -46,6 +51,7 @@ const Filtering = () => {
       <label>Search key:</label>
       {filter}
       <input style={{ marginTop: "10px" }} type="submit" />
+      {/* input to clear search params by refreshing the page */}
       <input
         style={{ marginTop: "10px" }}
         type="button"

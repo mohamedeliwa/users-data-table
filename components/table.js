@@ -4,12 +4,16 @@ import { UsersContext } from "../context/UsersContext";
 
 const Table = () => {
   const { users, sortUsers } = useContext(UsersContext);
+
+  // table sortign state
   const [sorting, setSorting] = useState({
     element: "createdAt",
     param: "createdAt",
     direction: "desc",
   });
 
+  // function that handle updating sorting state
+  // and calling context's function to sort data properly
   const handleSorting = (e) => {
     e.preventDefault();
     if (e.target.id === sorting.element) {
@@ -37,6 +41,7 @@ const Table = () => {
     }
   };
 
+  // mapping fetched data to users table
   const usersRows = users.map((user, index) => {
     return (
       <tr key={user._id}>

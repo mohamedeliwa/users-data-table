@@ -11,8 +11,11 @@ export default function Home() {
         <title>Users Table Data</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      {/* Search form */}
       <Filtering />
+      {/* Table to display users' data */}
       <Table />
+      {/* paginations' component */}
      <Paginations />
     </div>
   )
