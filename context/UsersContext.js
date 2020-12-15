@@ -4,6 +4,7 @@ export const UsersContext = createContext();
 
 const UsersContextProvider = (props) => {
   const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(0);
   useEffect(() => {
     (async () => {
       try {
@@ -51,13 +52,24 @@ const UsersContextProvider = (props) => {
     }
   };
 
-  const fetchUsersByPage = async (userPerPage, page) => {
+  const fetchUsersByPage = async (userPerPage, direction) => {
+    let pageRequested = page;
+    if (direction === "+") {
+      pageRequested = page + 1;
+    } else if (direction === "-" && page > 0) {
+      pageRequested = page - 1;
+    }
     try {
-      const url = `http://localhost:5000/users?limit=${userPerPage}&skip=${page}`;
+      const url = `http://localhost:5000/users?limit=${userPerPage}&skip=${
+        pageRequested * userPerPage
+      }`;
       const res = await fetch(url);
       if (res.status === 200) {
         const resJSON = await res.json();
-        setUsers([...resJSON]);
+        if (resJSON.length > 0) {
+          setUsers([...resJSON]);
+          if (userPerPage !== "all") setPage(pageRequested);
+        }
       } else {
         throw new Error("Failed to fetch users!");
       }
@@ -83,7 +95,9 @@ const UsersContextProvider = (props) => {
   };
 
   return (
-    <UsersContext.Provider value={{ users, sortUsers, fetchUsersByPage, searchUsers }}>
+    <UsersContext.Provider
+      value={{ users, page, sortUsers, fetchUsersByPage, searchUsers }}
+    >
       {props.children}
     </UsersContext.Provider>
   );
