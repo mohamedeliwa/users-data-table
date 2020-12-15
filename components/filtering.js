@@ -1,8 +1,10 @@
 import { useState, useContext } from "react";
 import styles from "../styles/filter.module.css";
 import { UsersContext } from "../context/UsersContext";
+import { useRouter } from "next/router";
 
 const Filtering = () => {
+  const router = useRouter()
   const [filterParam, setFilterParam] = useState("first_name");
   const { searchUsers } = useContext(UsersContext);
   const handleParamChange = (e) => {
@@ -44,6 +46,13 @@ const Filtering = () => {
       <label>Search key:</label>
       {filter}
       <input style={{ marginTop: "10px" }} type="submit" />
+      <input
+        style={{ marginTop: "10px" }}
+        type="button"
+        value="Clear search"
+        style={{ marginTop: "3px" }}
+        onClick={() => router.reload()}
+      />
     </form>
   );
 };
