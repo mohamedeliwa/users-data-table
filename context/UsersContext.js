@@ -3,6 +3,16 @@ import { useState, createContext, useEffect } from "react";
 export const UsersContext = createContext();
 
 const UsersContextProvider = (props) => {
+  const [url, setUrl] = useState({
+    base: "http://localhost:5000/users?limit=10",
+    limit: 10,
+    skip: 0,
+    first_name: "",
+    last_name: "",
+    email: "",
+    gender: "",
+    createdAt: "",
+  });
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [sorting, setSorting] = useState({
@@ -29,6 +39,22 @@ const UsersContextProvider = (props) => {
       }
     })();
   }, []);
+
+  const generateURL = (urlObj) => {
+    const newUrl = {
+      ...url,
+      ...urlObj,
+    };
+    setUrl({ ...newUrl });
+
+    return `http://localhost:5000/users?limit=${newUrl.limit || ""}&skip=${
+      newUrl.skip || ""
+    }&first_name=${newUrl.first_name || ""}&last_name=${
+      newUrl.last_name || ""
+    }&email=${newUrl.email || ""}&gender=${newUrl.gender || ""}&createdAt=${
+      newUrl.createdAt || ""
+    }`;
+  };
 
   const sortUsers = (
     param = sorting.param,
@@ -71,14 +97,17 @@ const UsersContextProvider = (props) => {
       pageRequested = page - 1;
     }
     try {
-      const url = `http://localhost:5000/users?limit=${userPerPage}&skip=${
-        pageRequested * userPerPage
-      }`;
+      console.log(
+        generateURL({ limit: userPerPage, skip: pageRequested * userPerPage })
+      );
+      const url = generateURL({
+        limit: userPerPage,
+        skip: pageRequested * userPerPage,
+      });
       const res = await fetch(url);
       if (res.status === 200) {
         const resJSON = await res.json();
         if (resJSON.length > 0) {
-          // setUsers([...resJSON]);
           sortUsers(sorting.param, sorting.direction, [...resJSON]);
           if (userPerPage !== "all") setPage(pageRequested);
         }
@@ -92,12 +121,18 @@ const UsersContextProvider = (props) => {
 
   const searchUsers = async (searchKey, searchValue) => {
     try {
-      console.log(searchValue);
-      const url = `http://localhost:5000/users?limit=10&skip=0&${searchKey}=${searchValue}`;
+      const match = {
+        first_name: "",
+        last_name: "",
+        email: "",
+        gender: "",
+        createdAt: "",
+      };
+      match[searchKey] = searchValue;
+      const url = generateURL(match);
       const res = await fetch(url);
       if (res.status === 200) {
         const resJSON = await res.json();
-        // setUsers([...resJSON]);
         sortUsers(sorting.param, sorting.direction, [...resJSON]);
       } else {
         throw new Error("Failed to fetch users!");
